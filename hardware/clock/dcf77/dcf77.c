@@ -157,6 +157,14 @@ ISR(ANALOG_COMP_vect)
 #elif CLOCK_CPU_SUPPORT
   uint16_t timertemp = TC1_COUNTER_CURRENT - (65536 - CLOCK_SECONDS);
   uint32_t divtime = (dcf.ticks * CLOCK_SECONDS) + timertemp - dcf.timerlast;
+
+  DCFDEBUG("Edge: %c, ticks: %u, timertemp: %u, timerlast: %lu, divtime: %lu\n",
+#ifdef HAVE_DCF1
+      (PIN_HIGH(DCF1)) ? 'R' : 'F',
+#else
+      (bit_is_set(ACSR, ACO)) ? 'R' : 'F',
+#endif
+      dcf.ticks, timertemp, dcf.timerlast, divtime);
 #endif
 
   if (divtime < MS(20))         // ignore short spikes
@@ -167,56 +175,74 @@ ISR(ANALOG_COMP_vect)
 #else
   if (bit_is_set(ACSR, ACO))
 #endif
-  {                             // start of impulse
+  {
+    // rising edge / pin high - start of impulse
+
+    // check timing constraints for rising edge of valid pulse
     if (divtime > MS(992) || divtime < MS(736))
     {
+      DCFDEBUG("invalid timing, reset bitcount to 0\n");
       dcf.bitcount = 0;
     }
+
+    // "missing" pulse indicates end of one dcf77 datagram, next rising edge
+    // indicates start of a minute
     if (divtime > MS(1700) && divtime < MS(2000) && dcf.bitcount == 0)
     {
       if (dcf.valid == 1)
       {
         // set seconds
         clock_set_time(timestamp);
+
         // and reset milliseconds
 #ifdef CLOCK_CRYSTAL_SUPPORT
         timertemp = 0;
         TIMER_8_AS_1_COUNTER_CURRENT = timertemp;
 #elif CLOCK_CPU_SUPPORT
-        TC1_COUNTER_COMPARE =
-          65536 - CLOCK_SECONDS + (timertemp % CLOCK_TICKS);
-        timertemp = 65536 - CLOCK_SECONDS;
-        TC1_COUNTER_CURRENT = timertemp;
+        // reset TC1 and timestamp to zero at rising edge,
+        // sync timer with the begin of a minute
+        TC1_COUNTER_CURRENT = 65536 - CLOCK_SECONDS;
+        TC1_COUNTER_COMPARE = 65536 - CLOCK_SECONDS + CLOCK_TICKS;
+        timertemp = 0;
 #endif
+
         last_valid_timestamp = timestamp;
         set_dcf_count(1);
         set_ntp_count(0);
+
 #ifdef NTPD_SUPPORT
         // our DCF-77 Clock ist a primary; intern stratum 0; so we offer stratum+1 ! //
         ntp_setstratum(0);
 #endif
+
         DCFDEBUG("set unix-time %lu\n", timestamp);
+
         dcf.valid = 0;
       }
+
       DCFDEBUG("start sync\n");
       dcf.bitcount = 1;
     }
-    dcf.ticks = 0;              // start time meassure for new bit
+    dcf.ticks = 0;              // start time measure for new bit
   }
   else
-  {                             // end of impulse
+  {
+    // falling edge / pin low - end of impulse
     DCFDEBUG("pulse: %2u %4ums %c\n",
              dcf.bitcount,
              TICK2MS(divtime),
              (char) ((divtime > MS(250) || divtime < MS(40)) ?
                      'F' : HIGH(divtime) ? '1' : '0'));
+
     if (divtime > MS(250) || divtime < MS(40))
-    {                           // invalid pulse
+    {
+      // invalid pulse length
       dcf.bitcount = 0;
       dcf.valid = 0;
     }
     else
     {
+      // valid pulse, decode signal
       if (dcf.bitcount > 0 && dcf.bitcount < 60)
       {
         switch (dcf.bitcount)
@@ -289,6 +315,7 @@ ISR(ANALOG_COMP_vect)
             dcf.timebyte = 0;
             break;
         }
+
         if (HIGH(divtime))      // 1
         {
           dcf.timeparity ^= 1;
@@ -305,8 +332,10 @@ ISR(ANALOG_COMP_vect)
         {
           if (dcf.bitcount == 21)       // start of time information
           {
+            DCFDEBUG("error, start bit must be 1.\n");
             dcf.bitcount = 0;
           }
+
           if (dcf.timebyte)
           {
             dcf.time[dcf.timebyte] >>= 1;
@@ -319,6 +348,7 @@ ISR(ANALOG_COMP_vect)
             dcf.valid = 0;
           }
         }
+
         if (dcf.bitcount == 59)
         {
           timestamp = compute_dcf77_timestamp();
@@ -341,6 +371,7 @@ ISR(ANALOG_COMP_vect)
       }
       dcf.bitcount++;
     }
+    dcf.ticks = 0;              // start time measure for new bit
   }
   dcf.timerlast = timertemp;
 }
