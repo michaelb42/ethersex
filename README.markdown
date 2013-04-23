@@ -1,18 +1,19 @@
-What's this?
-============
+# What's this?
+
 This is my personal variant of the Ethersex firmware for the Atmel megaAVR processors.
 
-Branches:
-* master  
-	the common master branch of this repo. New features will be added here when
-	they are ready for prime time.
-* e6_upstream  
+### Branches:
+* __master__  
+	the common master branch of this repository. New features will be added
+	here when they are ready for prime time.
+* __e6_upstream__  
 	this branch should always closely track upstream/master by pull'ing from
 	ethersex/ethersex and push'ing here.
-* project_neptun  
+* __project_neptun__  
 	Ethersex based firmware for the main controller of a project codenamed
-	"Project Neptun", an aquarium computer using "as many controllers as possible" (TM).
-* ...  
+	"Project Neptun", an aquarium / aquarium computer using "as many
+	&micro;controllers as possible" &trade;.
+* __...__  
 	several other transient experimental- and bugfix-branches.
 
 ***************************************************************************
