@@ -40,6 +40,7 @@ divert(0)dnl
 #endif
 
 #include <stdint.h>
+#include <stdbool.h>
 #include "core/debug.h"
 #include "services/freqcount/freqcount.h"
 
@@ -167,17 +168,19 @@ define(`pushdivert', `define(`_old_divert', divnum)')
 define(`popdivert', `divert(_old_divert)')
 define(`timer_divert_base', timer_divert)
 define(`timer_divert_last', 500)
-define(`timer_divert_start', `divert(eval(timer_divert_base` + $1 * 2'))$2')
-define(`timer_divert_end', `divert(eval(timer_divert_base` + $1 * 2 + 1'))$2')
+define(`timer_divert_start', `divert(eval(timer_divert_base` + $1 * 2 + 'timer_divert_offset))$2')
+define(`timer_divert_end', `divert(eval(timer_divert_base` + $1 * 2 + 1 + 'timer_divert_offset))$2')
 define(`_divert_used', `ifelse(eval(`$1 > 'timer_divert_last), `1', `errprint(`timer_meta: Too big timer $1
-')m4exit(1)')ifdef(`_divert_used_$1', `', `define(`_divert_used_$1', `1')
+')m4exit(1)')define(`timer_divert_offset',`ifelse(eval(`$1 > 1'),`1',`eval(len($2)` % 10 * 2')',`0')')
+define(`timer_compare_op',`ifelse(eval(`$1 == 1'),`1',`true /* counter%1 */',`(counter + 'timer_divert_offset`) % $1 == 0')')
+define(`this_divert', $1` + 'timer_divert_offset)ifdef(`_divert_used_'this_divert, `', `define(`_divert_used_'this_divert, `1')
 timer_divert_start($1, `
-if (counter % $1 == 0) {
+if ('timer_compare_op`) {
 ')dnl
 timer_divert_end($1, `}
 ')dnl
 ')')
-define(`timer', `pushdivert()_divert_used($1)timer_divert_start($1, `$2;
+define(`timer', `pushdivert()_divert_used($1, $2)timer_divert_start($1, `$2;
 ')popdivert()')
 divert(timer_divert_base)
 void periodic_process(void)
@@ -226,7 +229,12 @@ void periodic_process(void)
         }
 #endif
 
-divert(eval(timer_divert_base`+'timer_divert_last` * 2 + 2'))
+divert(eval(timer_divert_base`+'timer_divert_last` * 2 + 2 + 20'))
+
+if (counter >= 500)
+{
+	counter = 0;
+}
 
 #ifdef  UIP_SUPPORT
    uip_buf_unlock ();
@@ -260,4 +268,4 @@ divert(eval(timer_divert_base`+'timer_divert_last` * 2 + 2'))
   }
 }
 divert(-1)
-timer(timer_divert_last, `counter = 0')
+dnl timer(timer_divert_last, `counter = 0')
