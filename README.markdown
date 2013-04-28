@@ -9,10 +9,16 @@ This is my personal variant of the Ethersex firmware for the Atmel megaAVR proce
 * __e6_upstream__  
 	this branch should always closely track upstream/master by pull'ing from
 	ethersex/ethersex and push'ing here.
+* __experimental__  
+	this branch is used for experimental stuff. It will be `reset --hard`
+	as needed from time to time and might not even compile...
 * __project_neptun__  
 	Ethersex based firmware for the main controller of a project codenamed
 	"Project Neptun", an aquarium / aquarium computer using "as many
 	&micro;controllers as possible" &trade;.
+* __avrdude_config__  
+	add `program` and `fuses` target to the toplevel Makefile and integrate
+	avdude configuration options into menuconfig.
 * __...__  
 	several other transient experimental- and bugfix-branches.
 
