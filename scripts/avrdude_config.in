@@ -5,32 +5,32 @@ AVRDUDE_PROGRAMMER_DEFAULT="${AVRDUDE_PROGRAMMER:=avrispmkII}"
 
 choice 'Programmer Type (-c type)' \
 	"${AVRDUDE_PROGRAMMER_TYPES}" \
-	"$AVRDUDE_PROGRAMMER_DEFAULT" CONF_AVRDUDE_PROGRAMMER
+	"$AVRDUDE_PROGRAMMER_DEFAULT" CONFIG_AVRDUDE_PROGRAMMER
 
-CONF_AVRDUDE_PROGRAMMER="${CONF_AVRDUDE_PROGRAMMER:=${AVRDUDE_PROGRAMMER_DEFAULT}}"	
+CONFIG_AVRDUDE_PROGRAMMER="${CONFIG_AVRDUDE_PROGRAMMER:=${AVRDUDE_PROGRAMMER_DEFAULT}}"	
 
-define_symbol AVRDUDE_PROGRAMMER $(echo "$CONF_AVRDUDE_PROGRAMMER" | awk '{ num=sub(/^_/, "", $0); if (num > 0) { gsub(/_/, "-", $0) }; print $0 }')
+define_symbol AVRDUDE_PROGRAMMER $(echo "$CONFIG_AVRDUDE_PROGRAMMER" | awk '{ num=sub(/^_/, "", $0); if (num > 0) { gsub(/_/, "-", $0) }; print $0 }')
 
-string 'Port (-P port, "usb", "/dev/ttyS0", ...)' CONF_AVRDUDE_PORT 'usb'
-define_symbol AVRDUDE_PORT $CONF_AVRDUDE_PORT
+string 'Port (-P port, "usb", "/dev/ttyS0", ...)' CONFIG_AVRDUDE_PORT 'usb'
+define_symbol AVRDUDE_PORT $CONFIG_AVRDUDE_PORT
 
 ###
 comment 'Options ----------------------'
 
-bool 'Extra verbose output (-v -v)' CONF_AVRDUDE_VERBOSE
-if [ "$CONF_AVRDUDE_VERBOSE" = "y" ]; then
+bool 'Extra verbose output (-v -v)' CONFIG_AVRDUDE_VERBOSE
+if [ "$CONFIG_AVRDUDE_VERBOSE" = "y" ]; then
 	define_string AVRDUDE_VERBOSE "-v -v"
 else
 	define_symbol AVRDUDE_VERBOSE "-v"
 fi
 
-bool 'Do NOT verify after programming (-V)' CONF_AVRDUDE_NO_VERIFY
-if [ "$CONF_AVRDUDE_NO_VERIFY" = "y" ]; then
+bool 'Do NOT verify after programming (-V)' CONFIG_AVRDUDE_NO_VERIFY
+if [ "$CONFIG_AVRDUDE_NO_VERIFY" = "y" ]; then
 	define_symbol AVRDUDE_NO_VERIFY "-V"
 fi
 
-bool 'Count # of erase cycles in EEPROM (-y)' CONF_AVRDUDE_ERASE_COUNTER
-if [ "$CONF_AVRDUDE_ERASE_COUNTER" = "y" ]; then
+bool 'Count # of erase cycles in EEPROM (-y)' CONFIG_AVRDUDE_ERASE_COUNTER
+if [ "$CONFIG_AVRDUDE_ERASE_COUNTER" = "y" ]; then
 	define_symbol AVRDUDE_ERASE_COUNTER "-y"
 fi
 
@@ -48,9 +48,9 @@ if [ $FREQ -ge 16000000 ]; then
 fi
 choice 'Bitclock for ISP or JTAG (-B usec)' \
 	"${BITCLOCK_CHOICES}" \
-	"$AVRDUDE_BITCLOCK_DEFAULT" CONF_AVRDUDE_BITCLOCK
+	"$AVRDUDE_BITCLOCK_DEFAULT" CONFIG_AVRDUDE_BITCLOCK
 
-case $CONF_AVRDUDE_BITCLOCK in
+case $CONFIG_AVRDUDE_BITCLOCK in
 	AVRDUDE_BITCLOCK_1)
 		define_string AVRDUDE_BITCLOCK "-B 1"
 	;;
@@ -67,14 +67,67 @@ esac
 
 ###
 comment 'Extra Options ----------------'
-string 'Pass extra options to avrdude' CONF_AVRDUDE_EXTRA_OPTIONS
-if [ -n "$CONF_AVRDUDE_EXTRA_OPTIONS" ]; then
-	define_string AVRDUDE_EXTRA_OPTIONS $CONF_AVRDUDE_EXTRA_OPTIONS
+string 'Pass extra options to avrdude' CONFIG_AVRDUDE_EXTRA_OPTIONS
+if [ -n "$CONFIG_AVRDUDE_EXTRA_OPTIONS" ]; then
+	define_string AVRDUDE_EXTRA_OPTIONS "$CONFIG_AVRDUDE_EXTRA_OPTIONS"
 fi
 
 ###
-# TODO comment 'Fuses ------------------------'
+comment 'Fuses ------------------------'
+# TODO add missing fuse default values for e6
+case "$MCU" in
+	at90can128)
+		DEFAULT_AVRDUDE_LFUSE=FF
+		DEFAULT_AVRDUDE_HFUSE=DF
+		DEFAULT_AVRDUDE_EFUSE=FD
+	;;
+	atmega2561)
+		DEFAULT_AVRDUDE_LFUSE=e6
+		DEFAULT_AVRDUDE_HFUSE=d1
+		DEFAULT_AVRDUDE_EFUSE=fd
+	;;
+	atmega644*)
+		DEFAULT_AVRDUDE_LFUSE=e6
+		DEFAULT_AVRDUDE_HFUSE=d1
+		DEFAULT_AVRDUDE_EFUSE=fd
+	;;
+	atmega1284p)
+		DEFAULT_AVRDUDE_LFUSE=e6
+		DEFAULT_AVRDUDE_HFUSE=d1
+		DEFAULT_AVRDUDE_EFUSE=fd
+	;;
+	*)
+		DEFAULT_AVRDUDE_LFUSE=""
+		DEFAULT_AVRDUDE_HFUSE=""
+		DEFAULT_AVRDUDE_EFUSE=""
+	;;
+esac	
 
+hex 'Fuse Low Byte (FLB)' CONFIG_AVRDUDE_LFUSE $DEFAULT_AVRDUDE_LFUSE
+# exactly two digits, please
+if expr "$CONFIG_AVRDUDE_LFUSE" : '^[0-9a-fA-F][0-9a-fA-F]$' >/dev/null
+then
+        define_symbol AVRDUDE_LFUSE 0x${CONFIG_AVRDUDE_LFUSE}
+else
+        define_symbol AVRDUDE_LFUSE INVALID_VALUE
+        echo -e "\007*** Invalid value for Fuse Low Byte"
+fi
 
+hex 'Fuse High Byte (FHB)' CONFIG_AVRDUDE_HFUSE $DEFAULT_AVRDUDE_HFUSE
+if expr "$CONFIG_AVRDUDE_HFUSE" : '^[0-9a-fA-F][0-9a-fA-F]$' >/dev/null
+then
+        define_symbol AVRDUDE_HFUSE 0x${CONFIG_AVRDUDE_HFUSE}
+else
+        define_symbol AVRDUDE_HFUSE INVALID_VALUE
+        echo -e "\007*** Invalid value for Fuse High Byte"
+fi
 
+hex 'Extended Fuse Byte (EFB)' CONFIG_AVRDUDE_EFUSE $DEFAULT_AVRDUDE_EFUSE
+if expr "$CONFIG_AVRDUDE_EFUSE" : '^[0-9a-fA-F][0-9a-fA-F]$' >/dev/null
+then
+        define_symbol AVRDUDE_EFUSE 0x${CONFIG_AVRDUDE_EFUSE}
+else
+        define_symbol AVRDUDE_EFUSE INVALID_VALUE
+        echo -e "\007*** Invalid value for Extended Fuse Byte"
+fi
 

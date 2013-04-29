@@ -19,41 +19,13 @@ AVRDUDE_WRITE_FLASH = -U flash:w:$(TARGET).hex
 #AVRDUDE_WRITE_EEPROM = -U eeprom:w:$(TARGET).eep
 
 # Fuse settings
-AVRDUDE_FUSE = -i 15    # Slow down the writing
+AVRDUDE_FUSE = -i 15 -B 4   # Slow down the writing
 
-ifeq ($(MCU),at90can128)
-AVRDUDE_LFUSE = 0xFF
-# Enable SPI
-AVRDUDE_HFUSE = 0xDF
-# Highest brown out detection
-AVRDUDE_EFUSE = 0xFD
-endif
-
-ifeq ($(MCU),atmega2561)
-AVRDUDE_LFUSE = 0xe6
-AVRDUDE_HFUSE = 0xd1
-# enable JTAG
-#AVRDUDE_HFUSE = 0x91
-AVRDUDE_EFUSE = 0xfd
-endif
-
-ifeq ($(MCU),atmega644)
-AVRDUDE_LFUSE = 0xe6
-AVRDUDE_HFUSE = 0xd1
-AVRDUDE_EFUSE = 0xfd
-endif
-
-ifeq ($(MCU),atmega644p)
-AVRDUDE_LFUSE = 0xe6
-AVRDUDE_HFUSE = 0xd1
-AVRDUDE_EFUSE = 0xfd
-endif
-
-ifeq ($(MCU),atmega1284p)
-AVRDUDE_LFUSE = 0xe6
-AVRDUDE_HFUSE = 0xd1
-AVRDUDE_EFUSE = 0xfd
-endif
+#ifeq ($(MCU),atmega1284p)
+#AVRDUDE_LFUSE = 0xe6
+#AVRDUDE_HFUSE = 0xd1
+#AVRDUDE_EFUSE = 0xfd
+#endif
 
 # Uncomment the following and set to a sensible value to speed things up.
 # Programming bitclock in microseconds, should be lower than 1/4 MCU clock.
@@ -73,12 +45,13 @@ endif
 # to submit bug reports.
 #AVRDUDE_VERBOSE = -v -v
 
+####################
 AVRDUDE_FLAGS = -p $(MCU) -P $(AVRDUDE_PORT) -c $(AVRDUDE_PROGRAMMER)
-AVRDUDE_FLAGS += $(AVRDUDE_BITCLOCK) 
+AVRDUDE_FLAGS += $(subst ",,$(AVRDUDE_BITCLOCK))
 AVRDUDE_FLAGS += $(AVRDUDE_NO_VERIFY)
-AVRDUDE_FLAGS += $(AVRDUDE_VERBOSE)
+AVRDUDE_FLAGS += $(subst ",,$(AVRDUDE_VERBOSE))
 AVRDUDE_FLAGS += $(AVRDUDE_ERASE_COUNTER)
-AVRDUDE_FLAGS += $(AVRDUDE_EXTRA_OPTIONS)
+AVRDUDE_FLAGS += $(subst ",,$(AVRDUDE_EXTRA_OPTIONS))
 
 # Commands for fuse writing
 AVRDUDE_WRITE_EFUSE = -U efuse:w:$(AVRDUDE_EFUSE):m
@@ -92,4 +65,5 @@ program: $(TARGET).hex #$(TARGET).eep
 # Write the fuses
 fuses:
 	$(AVRDUDE) $(AVRDUDE_FLAGS) $(AVRDUDE_FUSE) $(AVRDUDE_WRITE_EFUSE) $(AVRDUDE_WRITE_HFUSE) $(AVRDUDE_WRITE_LFUSE)
+
 	
