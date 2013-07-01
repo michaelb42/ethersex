@@ -14,7 +14,7 @@ endmenu
 
 source hardware/lcd/config.in
 source hardware/storage/config.in
-source hardware/i2c/master/config.in
+source hardware/i2c/config.in
 source hardware/camera/config.in
 
 mainmenu_option next_comment
@@ -40,9 +40,9 @@ mainmenu_option next_comment
 
   source hardware/sht/config.in
   source hardware/dht/config.in
+  source hardware/zacwire/config.in
 
 endmenu
 
-source hardware/zacwire/config.in
 source hardware/ultrasonic/config.in
 source hardware/hbridge/config.in
