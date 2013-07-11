@@ -22,9 +22,6 @@ This is my personal variant of the Ethersex firmware for the Atmel megaAVR proce
 	Ethersex based firmware for the main controller of a project codenamed
 	"Project Neptun", an aquarium / aquarium computer using "as many
 	&micro;controllers as possible" &trade;.
-* __avrdude_config__  
-	add `program` and `fuses` target to the toplevel Makefile and integrate
-	avdude configuration options into menuconfig.
 * __...__  
 	several other transient experimental- and bugfix-branches.
 
