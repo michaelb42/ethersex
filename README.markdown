@@ -3,6 +3,8 @@
 This is my personal variant of the Ethersex firmware for the Atmel megaAVR processors.
 
 ### New Features
+* 2013-07-15 - avrdude_config was merge to upstream
+	[commit 16c2a388ec775b51c049db1eeff3a8171c6ad71b] (https://github.com/ethersex/ethersex/commit/16c2a388ec775b51c049db1eeff3a8171c6ad71b)
 * 2013-05-01 - Merge branch 'avrdude_config' to Master:
 	add `program` and `fuses` target to the toplevel Makefile and integrate
 	avdude configuration options into menuconfig. 
