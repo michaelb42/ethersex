@@ -3370,3 +3370,24 @@ SIP_SUPPORT
 
   Client implementation of the Session Initiation Protocol (SIP).
 
+YPort Max Buffer Flush Interval (N*20ms)
+YPORT_FLUSH
+
+  To reduce the number of ethernet packets, a flush interval can be set.
+  The given value is a multiple of 20ms. 
+
+  * If the value is > 0, the serial receive buffer is flushed, if the flush interval has elapsed, 
+    a linefeed character was received or the receive buffer is filled more then 25%.
+
+  * If the value is = 0, the serial receive buffer is flushed immediately
+
+  Default value is 25 = 500ms
+
+SNMP support
+DHT_SNMP_SUPPORT
+  Depends on:
+   * SNMP Support (SNMP_SUPPORT)
+  
+  Make humidity and temperature measured by the DHT available via SNMP. Only one DHT sensor
+  is currently supported. OIDs are .5.1.0 (polling delay), .5.2.0 (temperature * 10) and
+  .5.3.0 (humidity * 10).
