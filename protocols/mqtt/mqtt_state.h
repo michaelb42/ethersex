@@ -1,10 +1,9 @@
 /*
- *
- * Copyright (c) 2008 by Daniel Lindner <daniel.lindner@gmx.de>
+ * Copyright (c) 2014 by Philip Matura <ike@tura-home.de>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
+ * as published by the Free Software Foundation; either version 3
  * of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -20,11 +19,17 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 
-#ifndef BSBPORT_RX_H
-#define BSBPORT_RX_H
+#ifndef HAVE_MQTT_STATE_H
+#define HAVE_MQTT_STATE_H
 
-void bsbport_rx_init(void);
-void bsbport_rx_periodic(void);
-void bsbport_store_msg(const uint8_t * const msg, const uint8_t len);
+enum {
+    MQTT_STATE_CONNECT,
+    MQTT_STATE_CONNECTED,
+    MQTT_STATE_SUBSCRIBED,
+};
 
-#endif /* BSBPORT_RX_H */
+typedef struct mqtt_connection_state_t {
+    uint8_t stage;
+} mqtt_connection_state_t;
+
+#endif  /* HAVE_MQTT_STATE_H */
