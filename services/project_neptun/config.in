@@ -1,0 +1,6 @@
+dep_bool_menu "Project Neptun" NEPTUN_SUPPORT
+  comment  "Neptun MMI"
+  dep_bool "Enable HD44780 LCD" NEPTUN_MMI_HD44780_SUPPORT $HD44780_SUPPORT
+	comment  "Debugging Flags"
+	dep_bool "Neptun General Debugging" DEBUG_NEPTUN $DEBUG $NEPTUN_SUPPORT
+endmenu

@@ -1,21 +1,12 @@
+<!DOCTYPE html>
 <html>
  <head>
-  <title>Ethersex Index Page</title>
+  <title>Neptun Welcome Page</title>
   <link rel="stylesheet" href="Sty.c" type="text/css"/>
  </head>
  <body>
-  <h1>Welcome to Ethersex!</h1>
+  <h1>Welcome to Project Neptun!</h1>
   <p>Congratulations!  Your Ethersex http server 'value_HOSTNAME' seems to be working <img src="gr.gif" alt=":-)"></p>
-  <p>You should never forget that ...
-  <pre align="center">
-      _   _                                            _          
-     | | | |                                          | |         
-  ___| |_| |__   ___ _ __ ___  _____  __    _ __ _   _| | ___ ____
- / _ \ __| '_ \ / _ \ '__/ __|/ _ \ \/ /   | '__| | | | |/ _ \_  /
-|  __/ |_| | | |  __/ |  \__ \  __/>  <    | |  | |_| | |  __// / 
- \___|\__|_| |_|\___|_|  |___/\___/_/\_\   |_|   \__,_|_|\___/___|
-</pre>
-  <p>For details on what ethersex is, <a href="http://www.ethersex.de/">ethersex.de</a>.</p>
 ifdef(`conf_MOTD_INLINE', `<p><a href="mo.ht">MOTD</a>: <b id="motd" style="border:1px dashed white"></b></p>
 <script src="scr.js" type="text/javascript"></script>
 <script>

@@ -1,0 +1,47 @@
+#
+#   Named Pin Configuration File
+#
+# You can assign names to your microcontroller's pins here.
+# Keep in mind that this names must consist of alphanumeric
+# characters only!
+#
+# Every line starting with a hash sign (#) is a comment.
+#
+#
+# PIN | IN/OUT | When active? | Name
+#-----+--------+--------------+----------------
+PA0	OUTPUT	 HIGH		pa0
+PA1	OUTPUT	 HIGH		pa1
+PA2	OUTPUT	 HIGH		pa2
+PA3	OUTPUT	 HIGH		pa3
+PA4 OUTPUT   HIGH   pa4
+PA5 OUTPUT   HIGH   pa5
+PA6 OUTPUT   HIGH   pa6
+PA7 OUTPUT   HIGH   pa7
+
+# PB0 OUTPUT   HIGH   p1  => IRMP
+PB1 OUTPUT   HIGH   p2
+# PB2 OUTPUT   HIGH   p3  => /INT_ETH
+# PB3 OUTPUT   HIGH   p4  => /CS_SD
+# PB4 OUTPUT   HIGH   p5  => /CS_ETH
+# PB5 OUTPUT   HIGH   p6  => MOSI
+# PB6 OUTPUT   HIGH   p7  => MISO
+# PB7 OUTPUT   HIGH   p8  => SCK
+
+# PC0 OUTPUT   HIGH   p1  => SCL
+# PC1 OUTPUT   HIGH   p2  => SDA
+PC2 OUTPUT   HIGH   p3
+PC3 OUTPUT   HIGH   p4
+PC4 OUTPUT   HIGH   p5
+PC5 OUTPUT   HIGH   p6
+PC6 OUTPUT   HIGH   p7
+PC7 OUTPUT   HIGH   p8
+
+# PD0 OUTPUT   HIGH   p1  => RxD0
+# PD1 OUTPUT   HIGH   p2  => TxD0
+# PD2 OUTPUT   HIGH   p3  => RxD1 / LED Power
+# PD3 OUTPUT   HIGH   p4  => TxD1
+# PD4 OUTPUT   HIGH   p5  => LED Netlink
+PD5 OUTPUT   HIGH   p6
+PD6 OUTPUT   HIGH   p7
+PD7 OUTPUT   HIGH   p8
