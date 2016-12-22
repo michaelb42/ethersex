@@ -1,7 +1,7 @@
 /*
  * Project Neptun
  *
- * Copyright (c) 2015 Michael Brakemeier <michael@brakemeier.de>
+ * Copyright (c) 2013-2017 Michael Brakemeier <michael@brakemeier.de>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License

@@ -1,7 +1,7 @@
 /*
  * Project Neptun
  *
- * Copyright (c) 2013-2015 Michael Brakemeier <michael@brakemeier.de>
+ * Copyright (c) 2013-2017 Michael Brakemeier <michael@brakemeier.de>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -33,6 +33,11 @@
 #include "neptun.h"
 #include "neptun_datastore.h"
 
+#define NEPTUN_OW_TEMP_SENSOR_NAME_LEN  4
+#define NEPTUN_OW_TEMP_SENSOR_WATER_1   "WAT1"
+#define NEPTUN_OW_TEMP_SENSOR_WATER_2   "WAT2"
+#define NEPTUN_OW_TEMP_SENSOR_AMBIENT_1 "AMB1"
+
 /**
  * Initialize Neptun onewire module.
  */
@@ -44,7 +49,9 @@ neptun_onewire_init(void)
   return;
 }
 
-
+/**
+ * Hook function called on every poll from onewire module.
+ */
 void
 neptun_onewire_poll_hook(ow_sensor_t * ow_sensor, uint8_t state)
 {
@@ -72,7 +79,9 @@ neptun_onewire_poll_hook(ow_sensor_t * ow_sensor, uint8_t state)
   return;
 }
 
-
+/**
+ * Read temperature.
+ */
 void
 neptun_onewire_read_temperature(ow_sensor_t * ow_sensor)
 {
@@ -80,11 +89,11 @@ neptun_onewire_read_temperature(ow_sensor_t * ow_sensor)
 
   if (ow_sensor->named)
   {
-    if (strncasecmp_P(ow_sensor->name, PSTR("WAT"), 3) == 0)
+    if (strncasecmp_P(ow_sensor->name, PSTR(NEPTUN_OW_TEMP_SENSOR_WATER_1), NEPTUN_OW_TEMP_SENSOR_NAME_LEN) == 0)
     {
       neptun_datastore.water_temperature = ow_sensor->temp.val;
     }
-    else if (strncasecmp_P(ow_sensor->name, PSTR("AMB"), 3) == 0)
+    else if (strncasecmp_P(ow_sensor->name, PSTR(NEPTUN_OW_TEMP_SENSOR_AMBIENT_1), NEPTUN_OW_TEMP_SENSOR_NAME_LEN) == 0)
     {
       neptun_datastore.ambient_temperature = ow_sensor->temp.val;
     }

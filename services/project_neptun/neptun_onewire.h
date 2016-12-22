@@ -1,7 +1,7 @@
 /*
  * Project Neptun
  *
- * Copyright (c) 2013-2015 Michael Brakemeier <michael@brakemeier.de>
+ * Copyright (c) 2013-2017 Michael Brakemeier <michael@brakemeier.de>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -34,8 +34,14 @@
  */
 void neptun_onewire_init(void);
 
+/**
+ * Hook function called on every poll from onewire module.
+ */
 void neptun_onewire_poll_hook(ow_sensor_t * ow_sensor, uint8_t state);
 
+/**
+ * Read temperature.
+ */
 void neptun_onewire_read_temperature(ow_sensor_t * ow_sensor);
 
 #endif /* NEPTUN_ONEWIRE_H */
