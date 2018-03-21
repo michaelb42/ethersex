@@ -2259,6 +2259,7 @@ Onewire naming support
 ONEWIRE_NAMING_SUPPORT
   Depends on:
    * Onewire support (ONEWIRE_SUPPORT)
+   * !NOT! TEENSY_SUPPORT
 
   Enable mapping of onewire rom addresses to names. Mapping table is stored in
   EEPROM and could be edited by ECMD commands:
@@ -3183,7 +3184,7 @@ SIP_SUPPORT
   Client implementation of the Session Initiation Protocol (SIP).
 
 YPort Max Buffer Flush Interval (N*20ms)
-YPORT_FLUSH
+CONF_YPORT_FLUSH
 
   To reduce the number of ethernet packets, a flush interval can be set.
   The given value is a multiple of 20ms.
@@ -3589,3 +3590,32 @@ DEBUG_HD44780_CHARCONV
 
   Add ECMD command (lcd print charset) to aid compilation of charset
   tables and debugging of charset conversion.
+
+Bluetooth
+BLUETOOTH_SUPPORT
+
+  Support for Bluetooth module HC-05, which is an easy to use Bluetooth SPP
+  (Serial Port Protocol) module, designed for transparent wireless serial
+  connection setup.
+
+  For details see http://www.ethersex.de/index.php/Bluetooth
+
+Device Name
+BLUETOOTH_NAME
+
+  The device name of the module as seen by other bluetooth devices.
+  31 characters max.
+
+Device PIN
+BLUETOOTH_PIN
+
+  The pairing pin code. Alphanumeric password. 16 characters max.
+  Default: 1234
+
+Watchdog in debug mode
+DEBUG_USE_WATCHDOG
+  Depends on: 
+   * Enable Debugging (DEBUG)
+
+  Activate the watchdog also in debug mode. Default is deactivated.
+
